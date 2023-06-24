@@ -31,3 +31,7 @@ func main() {
 		log.Panic(err)
 	}
 }
+
+func openDB(dsn string) (*sql.DB, error) {
+	return nil, nil
+}
