@@ -39,7 +39,7 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 
 	switch requestPayload.Action {
 		case "auth":
-			break
+			app.authenticate(w, requestPayload.Auth)
 		default:
 			app.errorJSON(w, errors.New("unknow action"))
 	}
@@ -54,4 +54,45 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayoload) {
 		app.errorJSON(w, err)
 		return
 	}
+
+	client := &http.Client{}
+
+	response, err := client.Do(request)
+
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	defer response.Body.Close()
+
+	if response.StatusCode == http.StatusUnauthorized {
+		app.errorJSON(w, errors.New("invalid credentials."))
+		return
+	} else if response.StatusCode != http.StatusAccepted {
+		app.errorJSON(w, errors.New("error calling auth service."))
+		return
+	}
+
+	var jsonFromService jsonResponse
+
+	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
+
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	if jsonFromService.Error {
+		app.errorJSON(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	var payload jsonResponse
+
+	payload.Error = false
+	payload.Message = "Authenticated"
+	payload.Data = jsonFromService.Data
+
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
