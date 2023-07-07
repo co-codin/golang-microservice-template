@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-
-	"golang.org/x/tools/go/analysis/passes/defers"
 )
 
 type RequestPayload struct {
