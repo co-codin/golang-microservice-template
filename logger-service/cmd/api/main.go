@@ -48,12 +48,18 @@ func main() {
 		Models: data.New(client),
 	}
 
-
+	go app.Serve()
 }
 
 func (app *Config) Serve() {
 	srv := &http.Server{
 		Addr: fmt.Sprint(":%s", webPort),
+		Handler: app.routes(),
+	}
+
+	err := srv.ListenAndServe()
+	if err != nil {
+		log.Panic()
 	}
 }
 
