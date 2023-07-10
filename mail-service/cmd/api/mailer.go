@@ -12,5 +12,10 @@ type Mail struct {
 }
 
 type Message struct {
-	
+	Fromt string
+	FromtName string
+	To string
+	Subject string
+	Attachments []string
+	Data any
 }
