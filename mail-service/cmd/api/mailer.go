@@ -12,10 +12,35 @@ type Mail struct {
 }
 
 type Message struct {
-	Fromt string
-	FromtName string
+	From string
+	FromName string
 	To string
 	Subject string
 	Attachments []string
 	Data any
+	DataMap map[string]any
+}
+
+func (m *Mail) SendSMTPMessage(msg Message) error {
+	if msg.From == "" {
+		msg.From = m.FromAddress
+	}
+	
+	if msg.FromName == "" {
+		msg.FromName = m.FromName
+	}
+
+	data := map[string]any {
+		"message": msg.Data,
+	}
+
+	msg.Data = data
+
+	formattedMessage, err := m.buildHTMLMessage(msg)
+
+	return nil
+}
+
+func (m *Mail) buildHTMLMessage(msg Message) (string, error) {
+
 }
