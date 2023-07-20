@@ -14,5 +14,21 @@ func NewConsumer(conn *amqp.Connection) (Consumer, error) {
 		conn: conn,
 	}
 
-	
+	err := consumer.setup()
+
+	if err != nil {
+		return Consumer{}, err
+	}
+
+	return consumer, nil
+}
+
+func (consumer *Consumer) setup() error {
+	channel, err := consumer.conn.Channel()
+
+	if err != nil {
+		return err
+	}
+
+	return declareExchange(channel)
 }
