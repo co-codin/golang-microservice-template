@@ -32,3 +32,13 @@ func (consumer *Consumer) setup() error {
 
 	return declareExchange(channel)
 }
+
+
+type Payload struct {
+	Name string `json:"name"`
+	Data string `json:"data"`
+}
+
+func (consumer *Consumer) Listen(topics []string) error {
+	
+}
