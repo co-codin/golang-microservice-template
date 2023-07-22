@@ -3,6 +3,7 @@ package event
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )
@@ -94,5 +95,23 @@ func (consumer *Consumer) Listen(topics []string) error {
 }
 
 func handlePayload(payload Payload) {
+	switch payload.Name {
+	case "log", "event":
+		err := logEvent(payload)
+		if err != nil {
+			log.Println(err)
+		}
+	case "auth":
+		// auth
 
+	default:
+		err := logEvent(payload)
+		if err != nil {
+			log.Println(err)
+		}
+	}
+}
+
+func logEvent(entry Payload) error {
+	return nil
 }
